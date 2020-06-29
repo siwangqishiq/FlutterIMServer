@@ -2,6 +2,7 @@ package xyz.panyi.imserver.handler;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.util.CharsetUtil;
 import xyz.panyi.imserver.model.Msg;
 
 /**
@@ -16,12 +17,17 @@ public class ServiceHandler extends SimpleChannelInboundHandler<Msg> {
      * @throws Exception
      */
     protected void channelRead0(ChannelHandlerContext ctx, Msg msg) throws Exception {
-        if(msg == null|| msg.getData() ==null  || msg.getLength() != msg.getData().length)
+        System.out.println("read msg = " + msg);
+
+        if(msg == null|| msg.getData() ==null )
             return;
 
         switch (msg.getCode()){
 
         }//end switch
+
+        String str = new String(msg.getData() , CharsetUtil.UTF_8);
+        System.out.println("data = " + str);
     }
 
     @Override
