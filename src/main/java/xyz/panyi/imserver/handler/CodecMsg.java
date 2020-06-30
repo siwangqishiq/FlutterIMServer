@@ -17,8 +17,8 @@ public class CodecMsg extends ByteToMessageCodec<Msg> {
     protected void encode(ChannelHandlerContext ctx, Msg msg, ByteBuf byteBuf) throws Exception {
         System.out.println("encode msg = " + msg);
 
-        byteBuf.writeInt(msg.getLength());
-        byteBuf.writeInt(msg.getCode());
+        byteBuf.writeIntLE(msg.getLength());
+        byteBuf.writeIntLE(msg.getCode());
         byteBuf.writeBytes(msg.getData());
     }
 
@@ -28,23 +28,22 @@ public class CodecMsg extends ByteToMessageCodec<Msg> {
         //System.out.println("readableBytes = " + byteBuf.readableBytes());
         if(byteBuf.readableBytes() > Integer.BYTES){
             Msg msg = new Msg();
-            msg.setLength(byteBuf.readInt());
+            msg.setLength(byteBuf.readIntLE());
             //System.out.println("msg len = " + msg.getLength());
             //System.out.println("readableBytes = " + byteBuf.readableBytes());
 
             if(byteBuf.readableBytes() > Integer.BYTES){
-                msg.setCode(byteBuf.readInt());
+                msg.setCode(byteBuf.readIntLE());
                 //System.out.println("msg code = " + msg.getCode());
 
                 //System.out.println("readableBytes = " + byteBuf.readableBytes());
                 //msg.setData(byteBuf.readBytes(byteBuf , msg.getLength()));
                 final int dataLen = msg.getLength() - Integer.BYTES - Integer.BYTES;
-                if(byteBuf.readableBytes() >= dataLen ){
+                if(dataLen > 0 && byteBuf.readableBytes() >= dataLen ){
                     byte[] dataBuf = new byte[dataLen];
                     byteBuf.readBytes(dataBuf);
                     msg.setData(dataBuf);
                 }
-
                 list.add(msg);
             }
         }

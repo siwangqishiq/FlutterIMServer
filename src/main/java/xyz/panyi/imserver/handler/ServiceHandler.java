@@ -49,14 +49,20 @@ public class ServiceHandler extends SimpleChannelInboundHandler<Msg> {
     }
 
     private void sayHello(ChannelHandlerContext ctx){
-        for(int i = 0 ; i < 10 ;i++){
-            final int index = i;
-            String s = "Hello World _ " + index;
+        ctx.executor().submit(()->{
+            for(int i = 0 ; i < 10 ;i++){
+                final int index = i;
+                String s = "你好世界_ " + index;
 
-            ctx.executor().submit(()->{
                 ctx.writeAndFlush(new StringWrap(s));
-            });
-        }
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            //ctx.close();
+        });
     }
 
 }//end class

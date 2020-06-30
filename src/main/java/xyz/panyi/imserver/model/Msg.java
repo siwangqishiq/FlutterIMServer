@@ -16,7 +16,7 @@ public class Msg {
 
     @Override
     public String toString() {
-        return"msg [ lenght = "+length+" , code = "+ code +" ]";
+        return"msg [ lenght = "+length+" , code = "+ code +" dataSize = "+ (data == null? 0:data.length)+" ]";
     }
 
     public int getLength() {
