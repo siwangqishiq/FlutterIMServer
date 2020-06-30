@@ -9,6 +9,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import xyz.panyi.imserver.handler.CodecMsg;
+import xyz.panyi.imserver.handler.ObjToMsgEncoder;
 import xyz.panyi.imserver.handler.ServiceHandler;
 
 public class ImServer {
@@ -32,6 +33,8 @@ public class ImServer {
                         protected void initChannel(SocketChannel socketChannel) throws Exception {
                             final ChannelPipeline pipeline = socketChannel.pipeline();
                             pipeline.addLast("msg_codec" , new CodecMsg());
+                            pipeline.addLast("obj_codec" , new ObjToMsgEncoder());
+
                             pipeline.addLast("service_handler" , new ServiceHandler());
                         }
                     });

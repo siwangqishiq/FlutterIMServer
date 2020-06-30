@@ -1,7 +1,5 @@
 package xyz.panyi.imserver.model;
 
-import io.netty.buffer.ByteBuf;
-
 public class Msg {
     private int length; //消息总长度
     private int code; //消息类型
@@ -10,10 +8,15 @@ public class Msg {
 
     public static Msg genMsg(int code , byte[] dataBuf){
         Msg msg = new Msg();
-        msg.setLength(Integer.BYTES + Integer.BYTES + dataBuf.length);
+        msg.setLength(Integer.BYTES + Integer.BYTES + (dataBuf == null? 0:dataBuf.length));
         msg.setCode(code);
         msg.setData(dataBuf);
         return msg;
+    }
+
+    @Override
+    public String toString() {
+        return"msg [ lenght = "+length+" , code = "+ code +" ]";
     }
 
     public int getLength() {
@@ -39,10 +42,4 @@ public class Msg {
     public void setData(byte[] data) {
         this.data = data;
     }
-
-    @Override
-    public String toString() {
-        return"msg [ lenght = "+length+" , code = "+ code +" ]";
-    }
-
 }//end class

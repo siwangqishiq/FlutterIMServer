@@ -38,9 +38,12 @@ public class CodecMsg extends ByteToMessageCodec<Msg> {
 
                 //System.out.println("readableBytes = " + byteBuf.readableBytes());
                 //msg.setData(byteBuf.readBytes(byteBuf , msg.getLength()));
-                byte[] dataBuf = new byte[msg.getLength() - Integer.BYTES - Integer.BYTES];
-                byteBuf.readBytes(dataBuf);
-                msg.setData(dataBuf);
+                final int dataLen = msg.getLength() - Integer.BYTES - Integer.BYTES;
+                if(byteBuf.readableBytes() >= dataLen ){
+                    byte[] dataBuf = new byte[dataLen];
+                    byteBuf.readBytes(dataBuf);
+                    msg.setData(dataBuf);
+                }
 
                 list.add(msg);
             }
