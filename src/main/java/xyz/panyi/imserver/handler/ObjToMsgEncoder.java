@@ -17,7 +17,7 @@ public class ObjToMsgEncoder extends MessageToMessageEncoder<ConvertMsg> {
     protected void encode(ChannelHandlerContext ctx, ConvertMsg data, List<Object> out) throws Exception {
         if(data == null)
             return;
-        
+
         out.add(Msg.genMsg(data.code() , data.toBytes()));
     }
 }
