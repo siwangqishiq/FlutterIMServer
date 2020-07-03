@@ -3,7 +3,9 @@ package xyz.panyi.imserver.handler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.util.CharsetUtil;
+import xyz.panyi.imserver.model.Codes;
 import xyz.panyi.imserver.model.Msg;
+import xyz.panyi.imserver.model.Person;
 import xyz.panyi.imserver.model.StringWrap;
 
 /**
@@ -14,7 +16,7 @@ public class ServiceHandler extends SimpleChannelInboundHandler<Msg> {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         System.out.println("channel active " + ctx.channel().remoteAddress().toString());
-        sayHello(ctx);
+        //sayHello(ctx);
     }
 
     @Override
@@ -35,11 +37,21 @@ public class ServiceHandler extends SimpleChannelInboundHandler<Msg> {
             return;
 
         switch (msg.getCode()){
+            case Codes.CODE_TEST_REQ://测试请求
+                handlePersonReq(msg.getData());
+                break;
 
         }//end switch
 
-        String str = new String(msg.getData() , CharsetUtil.UTF_8);
-        System.out.println("data = " + str);
+//        String str = new String(msg.getData() , CharsetUtil.UTF_8);
+//        System.out.println("data = " + str);
+    }
+
+    private void handlePersonReq(byte[] bytesData){
+        Person person = new Person();
+        person.decode(bytesData);
+
+        System.out.println("person name = " + person.getName() + "   age = " + person.getAge() +" desc  =  " + person.getDesc());
     }
 
     @Override

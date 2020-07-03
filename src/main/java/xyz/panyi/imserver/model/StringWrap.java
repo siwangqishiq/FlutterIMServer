@@ -1,11 +1,10 @@
 package xyz.panyi.imserver.model;
 
-import io.netty.util.CharsetUtil;
 
 /**
  * 字符串包装类
  */
-public class StringWrap implements ConvertMsg {
+public class StringWrap extends ICodec {
     private String content;
 
     public StringWrap(String content) {
@@ -17,10 +16,14 @@ public class StringWrap implements ConvertMsg {
     }
 
     @Override
-    public byte[] toBytes() {
-        if(content == null)
-            return null;
-        return content.getBytes(CharsetUtil.UTF_8);
+    public void decode(byte[] rawData) {
+
+        content = readString(null);
+    }
+
+    @Override
+    public byte[] encode() {
+        return null;
     }
 
     @Override

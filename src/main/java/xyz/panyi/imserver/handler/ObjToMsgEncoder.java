@@ -2,7 +2,7 @@ package xyz.panyi.imserver.handler;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageEncoder;
-import xyz.panyi.imserver.model.ConvertMsg;
+import xyz.panyi.imserver.model.ICodec;
 import xyz.panyi.imserver.model.Msg;
 
 import java.util.List;
@@ -12,12 +12,12 @@ import java.util.List;
  *
  *
  */
-public class ObjToMsgEncoder extends MessageToMessageEncoder<ConvertMsg> {
+public class ObjToMsgEncoder extends MessageToMessageEncoder<ICodec> {
     @Override
-    protected void encode(ChannelHandlerContext ctx, ConvertMsg data, List<Object> out) throws Exception {
+    protected void encode(ChannelHandlerContext ctx, ICodec data, List<Object> out) throws Exception {
         if(data == null)
             return;
 
-        out.add(Msg.genMsg(data.code() , data.toBytes()));
+        out.add(Msg.genMsg(data.code() , data.encode()));
     }
 }

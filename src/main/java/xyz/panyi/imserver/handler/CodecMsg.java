@@ -28,9 +28,10 @@ public class CodecMsg extends ByteToMessageCodec<Msg> {
         //System.out.println("readableBytes = " + byteBuf.readableBytes());
         if(byteBuf.readableBytes() > Integer.BYTES){
             Msg msg = new Msg();
+
             msg.setLength(byteBuf.readIntLE());
-            //System.out.println("msg len = " + msg.getLength());
-            //System.out.println("readableBytes = " + byteBuf.readableBytes());
+//            System.out.println("msg len = " + msg.getLength());
+//            System.out.println("readableBytes = " + byteBuf.readableBytes());
 
             if(byteBuf.readableBytes() > Integer.BYTES){
                 msg.setCode(byteBuf.readIntLE());
