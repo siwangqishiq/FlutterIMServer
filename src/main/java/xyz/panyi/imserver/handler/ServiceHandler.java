@@ -3,6 +3,8 @@ package xyz.panyi.imserver.handler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.util.CharsetUtil;
+import xyz.panyi.imserver.action.IAction;
+import xyz.panyi.imserver.action.LoginAction;
 import xyz.panyi.imserver.model.*;
 
 /**
@@ -34,12 +36,21 @@ public class ServiceHandler extends SimpleChannelInboundHandler<Msg> {
         if(msg == null|| msg.getData() ==null )
             return;
 
+        IAction action = null;
+
         switch (msg.getCode()){
             case Codes.CODE_TEST_REQ://测试请求
                 handlePersonReq(ctx , msg.getData());
                 break;
+            case Codes.CODE_LOGIN_REQ:
+                action = new LoginAction();
+                break;
 
         }//end switch
+
+        if(action != null){
+            action.handle(ctx , msg);
+        }
 
 //        String str = new String(msg.getData() , CharsetUtil.UTF_8);
 //        System.out.println("data = " + str);
