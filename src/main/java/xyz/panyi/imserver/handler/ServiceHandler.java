@@ -3,10 +3,7 @@ package xyz.panyi.imserver.handler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.util.CharsetUtil;
-import xyz.panyi.imserver.model.Codes;
-import xyz.panyi.imserver.model.Msg;
-import xyz.panyi.imserver.model.Person;
-import xyz.panyi.imserver.model.StringWrap;
+import xyz.panyi.imserver.model.*;
 
 /**
  *  im业务服务handler
@@ -22,6 +19,7 @@ public class ServiceHandler extends SimpleChannelInboundHandler<Msg> {
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         System.out.println("channelInactive " + ctx.channel().remoteAddress().toString());
+        ctx.close();
     }
 
     /**
@@ -38,7 +36,7 @@ public class ServiceHandler extends SimpleChannelInboundHandler<Msg> {
 
         switch (msg.getCode()){
             case Codes.CODE_TEST_REQ://测试请求
-                handlePersonReq(msg.getData());
+                handlePersonReq(ctx , msg.getData());
                 break;
 
         }//end switch
@@ -47,17 +45,25 @@ public class ServiceHandler extends SimpleChannelInboundHandler<Msg> {
 //        System.out.println("data = " + str);
     }
 
-    private void handlePersonReq(byte[] bytesData){
-        Person person = new Person();
-        person.decode(bytesData);
-
-        System.out.println("person name = " + person.getName() + "   age = " + person.getAge() +" desc  =  " + person.getDesc());
-    }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         cause.printStackTrace();
         ctx.close();
+    }
+
+    private void handlePersonReq(ChannelHandlerContext ctx ,byte[] bytesData){
+        Person person = new Person();
+        person.decode(bytesData);
+
+        PersonResp resp = new PersonResp();
+        resp.setRespContent(person.getName()+"是谁啊?");
+        resp.setTime(System.currentTimeMillis());
+
+        System.out.println("person name = " + person.getName() +
+                "   age = " + person.getAge() +" desc  =  " + person.getDesc());
+
+        ctx.writeAndFlush(resp);
     }
 
     private void sayHello(ChannelHandlerContext ctx){

@@ -1,5 +1,7 @@
 package xyz.panyi.imserver;
 
+import xyz.panyi.imserver.model.PersonResp;
+
 public class Main {
 
     /**

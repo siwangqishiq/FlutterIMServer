@@ -30,6 +30,11 @@ public abstract class ICodec {
         return byteBuf;
     }
 
+    public ByteBuf writeLong(ByteBuf byteBuf , long value){
+        byteBuf.writeLongLE(value);
+        return byteBuf;
+    }
+
     public ByteBuf writeString(ByteBuf byteBuf , String str){
         if(StringUtil.isNullOrEmpty(str)){
             byteBuf.writeIntLE(0);
@@ -45,6 +50,10 @@ public abstract class ICodec {
 
     public int readInt(ByteBuf byteBuf){
         return byteBuf.readIntLE();
+    }
+
+    public long readLong(ByteBuf byteBuf){
+        return byteBuf.readLongLE();
     }
 
     public String readString(ByteBuf byteBuf){
