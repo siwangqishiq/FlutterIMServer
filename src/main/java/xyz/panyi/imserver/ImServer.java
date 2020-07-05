@@ -11,12 +11,40 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import xyz.panyi.imserver.handler.CodecMsg;
 import xyz.panyi.imserver.handler.ObjToMsgEncoder;
 import xyz.panyi.imserver.handler.ServiceHandler;
+import xyz.panyi.imserver.model.User;
+import xyz.panyi.imserver.service.UserDataCache;
 
 public class ImServer {
     private int port;
 
     public ImServer(int port){
         this.port = port;
+
+        addTestData();
+    }
+
+    private void addTestData(){
+        User user1 = new User();
+        user1.setAccount("siwangqishiq");
+        user1.setUid(1);
+        user1.setDisplayName("潘易");
+        user1.setPwd("1989391013");
+
+        UserDataCache.getInstance().addUser(user1);
+
+        User user2 = new User();
+        user2.setAccount("gongtengxinyi");
+        user2.setUid(2);
+        user2.setDisplayName("工藤新一");
+        user2.setPwd("891013");
+        UserDataCache.getInstance().addUser(user2);
+
+        User user3 = new User();
+        user3.setAccount("test");
+        user3.setUid(3);
+        user3.setDisplayName("毛利兰兰");
+        user3.setPwd("891013");
+        UserDataCache.getInstance().addUser(user3);
     }
 
     public void runLoop(){
