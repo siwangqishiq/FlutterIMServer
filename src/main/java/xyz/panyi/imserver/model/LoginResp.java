@@ -16,6 +16,7 @@ public class LoginResp extends ICodec {
 
     private String account;
     private long uid;
+    private String avator;//头像
 
     public int getResultCode() {
         return resultCode;
@@ -49,6 +50,14 @@ public class LoginResp extends ICodec {
         this.uid = uid;
     }
 
+    public String getAvator() {
+        return avator;
+    }
+
+    public void setAvator(String avator) {
+        this.avator = avator;
+    }
+
     @Override
     public void decode(byte[] rawData) {
         ByteBuf byteBuf = Unpooled.copiedBuffer(rawData);
@@ -57,7 +66,7 @@ public class LoginResp extends ICodec {
         token = readString(byteBuf);
         account = readString(byteBuf);
         uid = readLong(byteBuf);
-
+        avator = readString(byteBuf);
     }
 
     @Override
@@ -68,6 +77,7 @@ public class LoginResp extends ICodec {
         writeString(byteBuf , token);
         writeString(byteBuf , account);
         writeLong(byteBuf , uid);
+        writeString(byteBuf , avator);
 
         byte[] result = new byte[byteBuf.readableBytes()];
         byteBuf.getBytes(0 , result);
@@ -86,6 +96,7 @@ public class LoginResp extends ICodec {
                 ", token='" + token + '\'' +
                 ", account='" + account + '\'' +
                 ", uid=" + uid +
+                ", avator=" + avator +
                 '}';
     }
 }

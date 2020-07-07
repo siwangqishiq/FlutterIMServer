@@ -32,6 +32,8 @@ public class LoginReq extends ICodec {
 
         account = readString(byteBuf);
         pwd = readString(byteBuf);
+
+        byteBuf.release();
     }
 
     @Override
@@ -43,6 +45,9 @@ public class LoginReq extends ICodec {
 
         byte[] result = new byte[byteBuf.readableBytes()];
         byteBuf.getBytes(0 , result);
+
+
+        byteBuf.release();
         return result;
     }
 
