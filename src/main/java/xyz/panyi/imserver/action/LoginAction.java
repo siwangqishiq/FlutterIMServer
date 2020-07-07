@@ -7,6 +7,7 @@ import xyz.panyi.imserver.model.Msg;
 import xyz.panyi.imserver.model.User;
 import xyz.panyi.imserver.service.AuthService;
 import xyz.panyi.imserver.service.IAuthService;
+import xyz.panyi.imserver.service.OnlineUsers;
 import xyz.panyi.imserver.service.UserDataCache;
 import xyz.panyi.imserver.token.SecurityHelper;
 
@@ -34,14 +35,20 @@ public class LoginAction implements IAction {
 
         if(authService.auth(account , pwd)){//登录成功
             resp.setResultCode(LoginResp.RESULT_CODE_SUCCESS);
-            String token = SecurityHelper.createToken(account , pwd);
-            resp.setToken(token);
 
             User user = UserDataCache.getInstance().getUserByAccount(account);
-            resp.setAccount(user.getAccount());
-            resp.setUid(user.getUid());
 
-            userLogin(account , token);
+            String token = SecurityHelper.createToken(user.getUid() , account , pwd);
+            resp.setToken(token);
+
+
+
+            if(user != null){
+                resp.setAccount(user.getAccount());
+                resp.setUid(user.getUid());
+
+                userLogin(user , token , ctx);
+            }
         }else{
             resp.setResultCode(LoginResp.RESULT_CODE_ERROR);
             resp.setToken(null);
@@ -52,7 +59,17 @@ public class LoginAction implements IAction {
         ctx.writeAndFlush(resp);
     }
 
-    private void userLogin(String account , String token){
 
+    /**
+     * 用户上线
+     *
+     * @param user
+     * @param token
+     * @param ctx
+     */
+    private void userLogin(User user , String token , ChannelHandlerContext ctx){
+        OnlineUsers.getInstance().userOnline(user.getUid() ,  ctx , user);//添加到在线用户列表
     }
+
+
 }//end class

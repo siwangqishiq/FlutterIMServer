@@ -32,11 +32,25 @@ public class UserDataCache {
         uidMap = new ConcurrentHashMap<Long , User>();
     }
 
+    /**
+     *
+     * @param account
+     * @return
+     */
     public User getUserByAccount(String account){
         if(StringUtil.isNullOrEmpty(account))
             return null;
 
         return accoutsMap.get(account);
+    }
+
+    /**
+     *
+     * @param uid
+     * @return
+     */
+    public User getUserByUid(long uid){
+        return uidMap.get(uid);
     }
 
     public void addUser(User user){

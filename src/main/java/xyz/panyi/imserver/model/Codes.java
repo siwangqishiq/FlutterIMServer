@@ -7,4 +7,7 @@ final public class Codes {
     public static final int CODE_LOGIN_REQ = 1003;//登录请求
     public static final int CODE_LOGIN_RESP = 1004;//登录返回
 
+    public static final int CODE_LOGINOUT_REQ = 1005;//注销登录 req
+    public static final int CODE_LOGINOUT_RESP = 1006;//注销登录 resp
+
 }

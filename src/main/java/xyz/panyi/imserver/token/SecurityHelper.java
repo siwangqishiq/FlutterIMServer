@@ -27,14 +27,16 @@ public class SecurityHelper {
         }
     }
 
+    private static final String KEY_UID = "_uid";
     private static final String KEY_ACCOUNT = "_account";
     private static final String KEY_PWD = "_pwd";
 
-    public static String createToken(String account, String pwd) {
+    public static String createToken(long uid , String account, String pwd) {
         if (StringUtil.isNullOrEmpty(account) || StringUtil.isNullOrEmpty(pwd))
             return null;
 
         Map<String, Object> headMap = new HashMap<String, Object>();
+        headMap.put(KEY_UID , String.valueOf(uid));
         headMap.put(KEY_ACCOUNT, account);
         headMap.put(KEY_PWD, pwd);
 
@@ -49,10 +51,6 @@ public class SecurityHelper {
         return token;
     }
 
-    public static String createToken(long uid, String pwd) {
-        return createToken(String.valueOf(uid) , pwd);
-    }
-
     /**
      * 验证Token
      * @param token
@@ -64,11 +62,13 @@ public class SecurityHelper {
 
         try {
             DecodedJWT decodeJWT = verifier.verify(token);
+
+            final long uid = decodeJWT.getHeaderClaim(KEY_UID).asInt();
             final String account = decodeJWT.getHeaderClaim(KEY_ACCOUNT).asString();
             final String pwd = decodeJWT.getHeaderClaim(KEY_PWD).asString();
 
             if(check != null){
-                return check.validateAccount(token , account , pwd);
+                return check.validateAccount(token ,uid , account , pwd);
             }else{
                 return true;
             }
@@ -78,7 +78,7 @@ public class SecurityHelper {
     }
 
     public interface ICheck{
-        boolean validateAccount(final String token , final String uid , final String pwd);
+        boolean validateAccount(final String token , final long uid , final String account, final String pwd);
     }
 
     /**

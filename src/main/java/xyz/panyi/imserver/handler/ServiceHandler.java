@@ -5,6 +5,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.util.CharsetUtil;
 import xyz.panyi.imserver.action.IAction;
 import xyz.panyi.imserver.action.LoginAction;
+import xyz.panyi.imserver.action.LoginOutAction;
 import xyz.panyi.imserver.model.*;
 
 /**
@@ -42,8 +43,11 @@ public class ServiceHandler extends SimpleChannelInboundHandler<Msg> {
             case Codes.CODE_TEST_REQ://测试请求
                 handlePersonReq(ctx , msg.getData());
                 break;
-            case Codes.CODE_LOGIN_REQ:
+            case Codes.CODE_LOGIN_REQ: //登录
                 action = new LoginAction();
+                break;
+            case Codes.CODE_LOGINOUT_REQ: //注销
+                action = new LoginOutAction();
                 break;
 
         }//end switch
