@@ -63,7 +63,7 @@ public class SecurityHelper {
         try {
             DecodedJWT decodeJWT = verifier.verify(token);
 
-            final long uid = decodeJWT.getHeaderClaim(KEY_UID).asInt();
+            final long uid = Long.parseLong(decodeJWT.getHeaderClaim(KEY_UID).asString());
             final String account = decodeJWT.getHeaderClaim(KEY_ACCOUNT).asString();
             final String pwd = decodeJWT.getHeaderClaim(KEY_PWD).asString();
 

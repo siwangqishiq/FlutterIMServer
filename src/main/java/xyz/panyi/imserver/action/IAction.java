@@ -9,7 +9,6 @@ public interface IAction {
      *
      * @param ctx
      * @param msg
-     * @param data
      */
     void handle(ChannelHandlerContext ctx , Msg msg);
 }

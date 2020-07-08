@@ -17,6 +17,52 @@ public class LoginResp extends ICodec {
     private String account;
     private long uid;
     private String avator;//头像
+    private String displayName;
+
+    @Override
+    public void decode(byte[] rawData) {
+        ByteBuf byteBuf = Unpooled.copiedBuffer(rawData);
+
+        resultCode = readInt(byteBuf);
+        token = readString(byteBuf);
+        account = readString(byteBuf);
+        uid = readLong(byteBuf);
+        avator = readString(byteBuf);
+        displayName = readString(byteBuf);
+    }
+
+    @Override
+    public byte[] encode() {
+        ByteBuf byteBuf = Unpooled.buffer(512);
+
+        writeInt(byteBuf , resultCode);
+        writeString(byteBuf , token);
+        writeString(byteBuf , account);
+        writeLong(byteBuf , uid);
+        writeString(byteBuf , avator);
+        writeString(byteBuf , displayName);
+
+        byte[] result = new byte[byteBuf.readableBytes()];
+        byteBuf.getBytes(0 , result);
+        return result;
+    }
+
+    @Override
+    public int code() {
+        return Codes.CODE_LOGIN_RESP;
+    }
+
+    @Override
+    public String toString() {
+        return "LoginResp{" +
+                "resultCode=" + resultCode +
+                ", token='" + token + '\'' +
+                ", account='" + account + '\'' +
+                ", uid=" + uid +
+                ", avator=" + avator +
+                ", dislayName=" + displayName +
+                '}';
+    }
 
     public int getResultCode() {
         return resultCode;
@@ -58,45 +104,12 @@ public class LoginResp extends ICodec {
         this.avator = avator;
     }
 
-    @Override
-    public void decode(byte[] rawData) {
-        ByteBuf byteBuf = Unpooled.copiedBuffer(rawData);
-
-        resultCode = readInt(byteBuf);
-        token = readString(byteBuf);
-        account = readString(byteBuf);
-        uid = readLong(byteBuf);
-        avator = readString(byteBuf);
+    public String getDisplayName() {
+        return displayName;
     }
 
-    @Override
-    public byte[] encode() {
-        ByteBuf byteBuf = Unpooled.buffer(256);
-
-        writeInt(byteBuf , resultCode);
-        writeString(byteBuf , token);
-        writeString(byteBuf , account);
-        writeLong(byteBuf , uid);
-        writeString(byteBuf , avator);
-
-        byte[] result = new byte[byteBuf.readableBytes()];
-        byteBuf.getBytes(0 , result);
-        return result;
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 
-    @Override
-    public int code() {
-        return Codes.CODE_LOGIN_RESP;
-    }
-
-    @Override
-    public String toString() {
-        return "LoginResp{" +
-                "resultCode=" + resultCode +
-                ", token='" + token + '\'' +
-                ", account='" + account + '\'' +
-                ", uid=" + uid +
-                ", avator=" + avator +
-                '}';
-    }
-}
+}//end class

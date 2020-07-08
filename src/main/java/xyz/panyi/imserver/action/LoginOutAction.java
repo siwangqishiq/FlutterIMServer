@@ -5,34 +5,40 @@ import xyz.panyi.imserver.model.LoginOutReq;
 import xyz.panyi.imserver.model.LoginOutResp;
 import xyz.panyi.imserver.model.Msg;
 import xyz.panyi.imserver.model.User;
-import xyz.panyi.imserver.service.AuthService;
-import xyz.panyi.imserver.service.IAuthService;
 import xyz.panyi.imserver.service.OnlineUsers;
-import xyz.panyi.imserver.token.SecurityHelper;
 
 /**
  *  注销报文
  *
  */
-public class LoginOutAction implements IAction {
+public class LoginOutAction extends CheckTokenAction<LoginOutReq> {
 
     @Override
-    public void handle(ChannelHandlerContext ctx, Msg msg) {
-        LoginOutReq req = new LoginOutReq();
+    LoginOutReq createDataBean(Msg msg) {
+        LoginOutReq req = new LoginOutReq(null);
         req.decode(msg.getData());
+        return req;
+    }
 
+    @Override
+    void vertifySuccess(ChannelHandlerContext ctx, LoginOutReq bean , User user) {
+        System.out.println("uid ----> " + bean.getUid());
 
-        System.out.println("uid ----> " + req.getUid());
-        System.out.println("token ----> " + req.getToken());
+        if(user.getUid() == bean.getUid()){
+            OnlineUsers.getInstance().userOffline(user.getUid());
 
-        boolean check = SecurityHelper.vertifyToken(req.getToken() ,
-                (token , uid , account , pwd)->{
-                    IAuthService authService = new AuthService();
-                    return authService.authUid(uid , pwd) && req.getUid() == uid;
-                });
+            LoginOutResp resp = new LoginOutResp();
+            resp.setResult(LoginOutResp.RESULT_LOGINOUT_SUCCESS);
+            ctx.writeAndFlush(resp);
+        }else{
+            vertifyError(ctx , bean);
+        }
+    }
+
+    @Override
+    void vertifyError(ChannelHandlerContext ctx, LoginOutReq bean) {
         LoginOutResp response = new LoginOutResp();
-        response.setResult(check?LoginOutResp.RESULT_LOGINOUT_SUCCESS : LoginOutResp.RESULT_LOGINOUT_ERROR);
-
+        response.setResult(LoginOutResp.RESULT_LOGINOUT_ERROR);
         ctx.writeAndFlush(response);
     }
 

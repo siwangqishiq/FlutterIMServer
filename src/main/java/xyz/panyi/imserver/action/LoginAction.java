@@ -46,6 +46,8 @@ public class LoginAction implements IAction {
             if(user != null){
                 resp.setAccount(user.getAccount());
                 resp.setUid(user.getUid());
+                resp.setAvator(user.getAvator());
+                resp.setDisplayName(user.getDisplayName());
 
                 userLogin(user , token , ctx);
             }
