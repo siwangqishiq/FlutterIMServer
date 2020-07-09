@@ -4,11 +4,32 @@ package xyz.panyi.imserver.model;
  *  用户信息
  */
 public class User {
+    public static final int SEX_FEMALE =0;
+    public static final int SEX_MALE =1;
+
     private long uid;
     private String pwd;
     private String account;
     private String displayName;
     private String avator;
+    private int sex; // 性别 1男  0女
+    private String desc;//描述
+
+    public int getSex() {
+        return sex;
+    }
+
+    public void setSex(int sex) {
+        this.sex = sex;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
+    }
 
     public long getUid() {
         return uid;

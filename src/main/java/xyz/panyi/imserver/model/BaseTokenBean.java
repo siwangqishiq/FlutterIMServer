@@ -13,6 +13,9 @@ public abstract class BaseTokenBean extends ICodec {
         this.token = _token;
     }
 
+    public BaseTokenBean(){
+    }
+
     public String getToken() {
         return token;
     }

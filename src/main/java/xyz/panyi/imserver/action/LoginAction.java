@@ -17,6 +17,7 @@ import xyz.panyi.imserver.token.SecurityHelper;
  */
 public class LoginAction implements IAction {
 
+    private UserLoginDo userLoginDo = new UserLoginDo();
 
     @Override
     public void handle(ChannelHandlerContext ctx, Msg msg) {
@@ -49,7 +50,7 @@ public class LoginAction implements IAction {
                 resp.setAvator(user.getAvator());
                 resp.setDisplayName(user.getDisplayName());
 
-                userLogin(user , token , ctx);
+                userLoginDo.userLogin(user , token , ctx);
             }
         }else{
             resp.setResultCode(LoginResp.RESULT_CODE_ERROR);
@@ -60,18 +61,5 @@ public class LoginAction implements IAction {
 
         ctx.writeAndFlush(resp);
     }
-
-
-    /**
-     * 用户上线
-     *
-     * @param user
-     * @param token
-     * @param ctx
-     */
-    private void userLogin(User user , String token , ChannelHandlerContext ctx){
-        OnlineUsers.getInstance().userOnline(user.getUid() ,  ctx , user);//添加到在线用户列表
-    }
-
 
 }//end class

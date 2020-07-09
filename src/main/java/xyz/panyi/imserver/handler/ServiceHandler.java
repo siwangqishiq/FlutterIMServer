@@ -3,6 +3,7 @@ package xyz.panyi.imserver.handler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.util.CharsetUtil;
+import xyz.panyi.imserver.action.AutoLoginAction;
 import xyz.panyi.imserver.action.IAction;
 import xyz.panyi.imserver.action.LoginAction;
 import xyz.panyi.imserver.action.LoginOutAction;
@@ -48,6 +49,9 @@ public class ServiceHandler extends SimpleChannelInboundHandler<Msg> {
                 break;
             case Codes.CODE_LOGINOUT_REQ: //注销
                 action = new LoginOutAction();
+                break;
+            case Codes.CODE_AUTO_LOGIN_REQ://自动登录
+                action = new AutoLoginAction();
                 break;
 
         }//end switch
