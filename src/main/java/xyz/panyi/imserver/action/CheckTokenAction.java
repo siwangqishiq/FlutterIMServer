@@ -11,7 +11,7 @@ import xyz.panyi.imserver.token.SecurityHelper;
  * 需要做权限检查的action
  * @param <T>
  */
-public abstract class  CheckTokenAction<T extends BaseTokenBean> implements  IAction{
+public abstract class CheckTokenAction <T extends BaseTokenBean> implements IAction{
 
     abstract T createDataBean(Msg msg);
 

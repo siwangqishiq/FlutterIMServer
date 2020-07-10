@@ -1,10 +1,7 @@
 package xyz.panyi.imserver.action;
 
 import io.netty.channel.ChannelHandlerContext;
-import xyz.panyi.imserver.model.AutoLoginReq;
-import xyz.panyi.imserver.model.Msg;
-import xyz.panyi.imserver.model.ResetResp;
-import xyz.panyi.imserver.model.User;
+import xyz.panyi.imserver.model.*;
 
 /**
  * 自动登录 接口请求
@@ -24,7 +21,10 @@ public class AutoLoginAction extends CheckTokenAction<AutoLoginReq> {
     void vertifySuccess(ChannelHandlerContext ctx, AutoLoginReq bean, User user) {
         userLoginDo.userLogin(user , bean.getToken() , ctx);
 
+        final AutoLoginResp resp = new AutoLoginResp();
+        resp.setResult(AutoLoginResp.RESULT_SUCCESS);
 
+        ctx.writeAndFlush(resp);
     }
 
     @Override
