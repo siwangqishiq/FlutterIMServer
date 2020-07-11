@@ -25,7 +25,7 @@ public abstract class BaseTokenBean extends ICodec {
     }
 
     @Override
-    public void decode(byte[] rawData) {
+    public void decode(ByteBuf rawData) {
         ByteBuf byteBuf = Unpooled.copiedBuffer(rawData);
 
         token = readString(byteBuf);
@@ -34,15 +34,13 @@ public abstract class BaseTokenBean extends ICodec {
     }
 
     @Override
-    public byte[] encode() {
-        ByteBuf byteBuf = Unpooled.buffer(512);
+    public ByteBuf encode() {
+        ByteBuf byteBuf = Unpooled.buffer(1024);
         writeString(byteBuf , token);
 
         encodeModel(byteBuf);
 
-        byte[] result = new byte[byteBuf.readableBytes()];
-        byteBuf.getBytes(0 , result);
-        return result;
+        return byteBuf;
     }
 
     abstract void decodeModel(ByteBuf byteBuf);

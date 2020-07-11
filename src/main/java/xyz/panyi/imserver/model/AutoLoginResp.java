@@ -13,22 +13,17 @@ public class AutoLoginResp extends ICodec {
     private int result;
 
     @Override
-    public void decode(byte[] rawData) {
-        ByteBuf byteBuf = Unpooled.copiedBuffer(rawData);
-
+    public void decode(ByteBuf byteBuf) {
         result = readInt(byteBuf);
     }
 
     @Override
-    public byte[] encode() {
+    public ByteBuf encode() {
         ByteBuf byteBuf = Unpooled.buffer(256);
 
         writeInt(byteBuf , result);
 
-        byte[] result = new byte[byteBuf.readableBytes()];
-        byteBuf.getBytes(0 , result);
-
-        return result;
+        return byteBuf;
     }
 
     @Override

@@ -1,6 +1,8 @@
 package xyz.panyi.imserver.model;
 
 
+import io.netty.buffer.ByteBuf;
+
 /**
  * 字符串包装类
  */
@@ -15,14 +17,14 @@ public class StringWrap extends ICodec {
         return new String(byteData);
     }
 
-    @Override
-    public void decode(byte[] rawData) {
 
-        content = readString(null);
+    @Override
+    public void decode(ByteBuf rawData) {
+
     }
 
     @Override
-    public byte[] encode() {
+    public ByteBuf encode() {
         return null;
     }
 

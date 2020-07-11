@@ -27,6 +27,10 @@ public class UserDataCache {
     private Map<String , User> accoutsMap;
     private Map<Long, User> uidMap;
 
+    public Map<Long, User> getUidMap(){
+        return uidMap;
+    }
+
     private UserDataCache(){
         accoutsMap = new ConcurrentHashMap<String , User>();
         uidMap = new ConcurrentHashMap<Long , User>();

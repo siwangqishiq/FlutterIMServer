@@ -1,6 +1,7 @@
 package xyz.panyi.imserver.handler;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageCodec;
 import io.netty.handler.codec.ByteToMessageDecoder;
@@ -41,8 +42,8 @@ public class CodecMsg extends ByteToMessageCodec<Msg> {
                 //msg.setData(byteBuf.readBytes(byteBuf , msg.getLength()));
                 final int dataLen = msg.getLength() - Integer.BYTES - Integer.BYTES;
                 if(dataLen > 0 && byteBuf.readableBytes() >= dataLen ){
-                    byte[] dataBuf = new byte[dataLen];
-                    byteBuf.readBytes(dataBuf);
+                    ByteBuf dataBuf = Unpooled.buffer(byteBuf.readableBytes());
+                    byteBuf.getBytes(byteBuf.readerIndex() , dataBuf);
                     msg.setData(dataBuf);
                 }
                 list.add(msg);

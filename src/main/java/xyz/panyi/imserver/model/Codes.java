@@ -13,6 +13,8 @@ final public class Codes {
     public static final int CODE_AUTO_LOGIN_REQ = 1007;//自动登录req
     public static final int CODE_AUTO_LOGIN_RESP = 1008;//自动登录resp
 
+    public static final int CODE_FRIEND_LIST_RESP = 3002;//
+
 
     public static final int CODE_RESET_RESP = 8001;//退出重新登录
 }

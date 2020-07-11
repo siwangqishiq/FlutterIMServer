@@ -6,6 +6,8 @@ import io.netty.util.CharsetUtil;
 import io.netty.util.internal.StringUtil;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 自动编码接口
@@ -13,14 +15,14 @@ import java.nio.ByteBuffer;
 public abstract class ICodec {
 
 
-    public abstract void decode(byte[] rawData);
+    public abstract void decode(ByteBuf rawData);
 
     /**
      * data to bytes
      *
      * @return
      */
-    public abstract byte[] encode();
+    public abstract ByteBuf encode();
 
 
     public abstract int code();
@@ -64,5 +66,57 @@ public abstract class ICodec {
 
         String str = new String(strBytes , CharsetUtil.UTF_8);
         return str;
+    }
+
+    /**
+     *  写入List数据
+     * @param byteBuf
+     * @param list
+     * @param <T>
+     * @return
+     */
+    public <T extends ICodec> ByteBuf writeList(ByteBuf byteBuf , List<T> list){
+        if(list == null || list.size() == 0){
+            byteBuf.writeIntLE(0);
+        }else{
+            byteBuf.writeIntLE(list.size());
+            for(int i = 0 ; i < list.size();i++){
+                ICodec codec = list.get(i);
+                byteBuf.writeBytes(codec.encode());
+            }//end for each
+        }
+        return byteBuf;
+    }
+
+    public interface IGenListItem<T extends ICodec>{
+        T createItem();
+    }
+
+    public <T extends ICodec> List<T> readList(ByteBuf byteBuf , IGenListItem genCallback){
+        int readIndex = 0;
+        int listSize = readInt(byteBuf);
+        readIndex += 4;
+        List<T> list = new ArrayList<T>();
+
+        if(listSize > 0){
+
+
+
+            for(int i = 0 ; i < listSize ; i++){
+                T item = (T)genCallback.createItem();
+
+                byteBuf.readerIndex();
+
+//                int readableSize = byteBuf.readableBytes();
+//                byte[] buf = new byte[readableSize];
+//                byteBuf.getBytes(readIndex , )
+//
+//                item.decode(byteBuf);
+
+                list.add(item);
+            }//end for i
+        }
+
+        return list;
     }
 }//end class

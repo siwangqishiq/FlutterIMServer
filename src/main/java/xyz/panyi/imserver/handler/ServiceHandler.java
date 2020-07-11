@@ -41,9 +41,6 @@ public class ServiceHandler extends SimpleChannelInboundHandler<Msg> {
         IAction action = null;
 
         switch (msg.getCode()){
-            case Codes.CODE_TEST_REQ://测试请求
-                handlePersonReq(ctx , msg.getData());
-                break;
             case Codes.CODE_LOGIN_REQ: //登录
                 action = new LoginAction();
                 break;
@@ -71,19 +68,19 @@ public class ServiceHandler extends SimpleChannelInboundHandler<Msg> {
         ctx.close();
     }
 
-    private void handlePersonReq(ChannelHandlerContext ctx ,byte[] bytesData){
-        Person person = new Person();
-        person.decode(bytesData);
-
-        PersonResp resp = new PersonResp();
-        resp.setRespContent(person.getName()+"是谁啊?");
-        resp.setTime(System.currentTimeMillis());
-
-        System.out.println("person name = " + person.getName() +
-                "   age = " + person.getAge() +" desc  =  " + person.getDesc());
-
-        ctx.writeAndFlush(resp);
-    }
+//    private void handlePersonReq(ChannelHandlerContext ctx ,byte[] bytesData){
+//        Person person = new Person();
+//        person.decode(bytesData);
+//
+//        PersonResp resp = new PersonResp();
+//        resp.setRespContent(person.getName()+"是谁啊?");
+//        resp.setTime(System.currentTimeMillis());
+//
+//        System.out.println("person name = " + person.getName() +
+//                "   age = " + person.getAge() +" desc  =  " + person.getDesc());
+//
+//        ctx.writeAndFlush(resp);
+//    }
 
     private void sayHello(ChannelHandlerContext ctx){
         ctx.executor().submit(()->{

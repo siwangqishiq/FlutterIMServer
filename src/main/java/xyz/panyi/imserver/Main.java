@@ -3,6 +3,10 @@ package xyz.panyi.imserver;
 import xyz.panyi.imserver.model.User;
 import xyz.panyi.imserver.service.UserDataCache;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 public class Main {
 
     /**
@@ -17,6 +21,8 @@ public class Main {
 
 
     private static void addTestData(){
+        List<User> userList = new ArrayList<User>();
+
         User user1 = new User();
         user1.setAccount("siwangqishiq");
         user1.setUid(1);
@@ -25,6 +31,7 @@ public class Main {
         user1.setPwd("123456");
         user1.setAvator("https://p1.pstatp.com/large/39f900000550ee07d57b");
         user1.setDesc("错的不是我 是这个世界");
+        userList.add(user1);
         UserDataCache.getInstance().addUser(user1);
 
         User user2 = new User();
@@ -35,6 +42,7 @@ public class Main {
         user2.setPwd("123456");
         user2.setAvator("https://pbs.twimg.com/profile_images/1253753602637656064/R7gPnwQR_400x400.jpg");
         user2.setDesc("真相永远只有一个");
+        userList.add(user2);
         UserDataCache.getInstance().addUser(user2);
 
         User user3 = new User();
@@ -45,6 +53,7 @@ public class Main {
         user3.setAvator("https://pbs.twimg.com/profile_images/888462069892136960/VG1pBK-d_400x400.jpg");
         user3.setSex(User.SEX_FEMALE);
         user3.setDesc("洗衣机~~~~~~~~~~~~");
+        userList.add(user3);
         UserDataCache.getInstance().addUser(user3);
 
         User user4 = new User();
@@ -54,6 +63,7 @@ public class Main {
         user4.setSex(User.SEX_FEMALE);
         user4.setPwd("123456");
         user4.setAvator("http://pic1.win4000.com/wallpaper/2020-07-06/5f02e087d5cc0.jpg");
+        userList.add(user4);
         UserDataCache.getInstance().addUser(user3);
 
 
@@ -65,6 +75,23 @@ public class Main {
         user5.setPwd("123456");
         user5.setAvator("https://konachan.net/sample/afaef3e794b6f135b81c227be7146f3b/Konachan.com%20-%20310476%20sample.jpg");
         UserDataCache.getInstance().addUser(user5);
+        userList.add(user5);
+
+
+        //add firends
+        Map<Long,User> uidMap = UserDataCache.getInstance().getUidMap();
+        List<Long> uids = new ArrayList<Long>();
+        for(Map.Entry<Long,User> entry : uidMap.entrySet()){
+            uids.add(entry.getKey());
+        }
+
+        for(Map.Entry<Long,User> entry : uidMap.entrySet()){
+            for(Long uid : uids){
+                if(uid.intValue() != entry.getValue().getUid()){
+                    entry.getValue().getFriends().add(uid);
+                }
+            }
+        }//end for each
 
 
     }

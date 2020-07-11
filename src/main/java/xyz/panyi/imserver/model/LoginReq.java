@@ -27,15 +27,13 @@ public class LoginReq extends ICodec {
     }
 
     @Override
-    public void decode(byte[] rawData) {
-        ByteBuf byteBuf = Unpooled.copiedBuffer(rawData);
-
+    public void decode(ByteBuf byteBuf) {
         account = readString(byteBuf);
         pwd = readString(byteBuf);
     }
 
     @Override
-    public byte[] encode() {
+    public ByteBuf encode() {
         ByteBuf byteBuf = Unpooled.buffer(256);
 
         writeString(byteBuf , account);
@@ -44,7 +42,7 @@ public class LoginReq extends ICodec {
         byte[] result = new byte[byteBuf.readableBytes()];
         byteBuf.getBytes(0 , result);
 
-        return result;
+        return byteBuf;
     }
 
     @Override

@@ -1,5 +1,8 @@
 package xyz.panyi.imserver.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *  用户信息
  */
@@ -14,6 +17,8 @@ public class User {
     private String avator;
     private int sex; // 性别 1男  0女
     private String desc;//描述
+
+    private List<Long> friends = new ArrayList<Long>();
 
     public int getSex() {
         return sex;
@@ -69,5 +74,13 @@ public class User {
 
     public void setAvator(String avator) {
         this.avator = avator;
+    }
+
+    public List<Long> getFriends() {
+        return friends;
+    }
+
+    public void setFriends(List<Long> friends) {
+        this.friends = friends;
     }
 }//end class

@@ -18,22 +18,20 @@ public class ResetResp extends ICodec {
     }
 
     @Override
-    public void decode(byte[] rawData) {
-        ByteBuf byteBuf = Unpooled.copiedBuffer(rawData);
+    public void decode(ByteBuf byteBuf) {
+
         code = readInt(byteBuf);
         msg = readString(byteBuf);
     }
 
     @Override
-    public byte[] encode() {
+    public ByteBuf encode() {
         ByteBuf byteBuf = Unpooled.buffer(512);
 
         writeInt(byteBuf , code);
         writeString(byteBuf , msg);
 
-        byte[] result = new byte[byteBuf.readableBytes()];
-        byteBuf.getBytes(0 , result);
-        return result;
+        return byteBuf;
     }
 
     @Override

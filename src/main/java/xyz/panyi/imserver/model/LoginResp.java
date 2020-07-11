@@ -20,9 +20,7 @@ public class LoginResp extends ICodec {
     private String displayName;
 
     @Override
-    public void decode(byte[] rawData) {
-        ByteBuf byteBuf = Unpooled.copiedBuffer(rawData);
-
+    public void decode(ByteBuf byteBuf) {
         resultCode = readInt(byteBuf);
         token = readString(byteBuf);
         account = readString(byteBuf);
@@ -32,7 +30,7 @@ public class LoginResp extends ICodec {
     }
 
     @Override
-    public byte[] encode() {
+    public ByteBuf encode() {
         ByteBuf byteBuf = Unpooled.buffer(512);
 
         writeInt(byteBuf , resultCode);
@@ -42,9 +40,7 @@ public class LoginResp extends ICodec {
         writeString(byteBuf , avator);
         writeString(byteBuf , displayName);
 
-        byte[] result = new byte[byteBuf.readableBytes()];
-        byteBuf.getBytes(0 , result);
-        return result;
+        return byteBuf;
     }
 
     @Override
