@@ -24,26 +24,26 @@ public class CodecMsg extends ByteToMessageCodec<Msg> {
     }
 
     protected void decode(ChannelHandlerContext ctx, ByteBuf byteBuf, List<Object> list) throws Exception {
-        System.out.println("decode bytebuf");
+        //System.out.println("decode bytebuf");
 
         //System.out.println("readableBytes = " + byteBuf.readableBytes());
         if(byteBuf.readableBytes() > Integer.BYTES){
             Msg msg = new Msg();
 
             msg.setLength(byteBuf.readIntLE());
-//            System.out.println("msg len = " + msg.getLength());
+            System.out.println("msg len = " + msg.getLength());
 //            System.out.println("readableBytes = " + byteBuf.readableBytes());
 
             if(byteBuf.readableBytes() > Integer.BYTES){
                 msg.setCode(byteBuf.readIntLE());
                 //System.out.println("msg code = " + msg.getCode());
 
-                //System.out.println("readableBytes = " + byteBuf.readableBytes());
-                //msg.setData(byteBuf.readBytes(byteBuf , msg.getLength()));
+                //System.out.println("readerIndex = " + byteBuf.readerIndex());
+
                 final int dataLen = msg.getLength() - Integer.BYTES - Integer.BYTES;
                 if(dataLen > 0 && byteBuf.readableBytes() >= dataLen ){
                     ByteBuf dataBuf = Unpooled.buffer(byteBuf.readableBytes());
-                    byteBuf.getBytes(byteBuf.readerIndex() , dataBuf);
+                    dataBuf.writeBytes(byteBuf , dataLen);
                     msg.setData(dataBuf);
                 }
                 list.add(msg);
