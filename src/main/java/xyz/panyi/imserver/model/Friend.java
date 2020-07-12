@@ -98,4 +98,15 @@ public class Friend extends ICodec {
     public void setNick(String nick) {
         this.nick = nick;
     }
+
+    @Override
+    public String toString() {
+        return "Friend{" +
+                "uid=" + uid +
+                ", sex=" + sex +
+                ", avator='" + avator + '\'' +
+                ", account='" + account + '\'' +
+                ", nick='" + nick + '\'' +
+                '}';
+    }
 }

@@ -92,27 +92,21 @@ public abstract class ICodec {
         T createItem();
     }
 
+    /**
+     * 读出
+     * @param byteBuf
+     * @param genCallback
+     * @param <T>
+     * @return
+     */
     public <T extends ICodec> List<T> readList(ByteBuf byteBuf , IGenListItem genCallback){
-        int readIndex = 0;
         int listSize = readInt(byteBuf);
-        readIndex += 4;
         List<T> list = new ArrayList<T>();
 
         if(listSize > 0){
-
-
-
             for(int i = 0 ; i < listSize ; i++){
                 T item = (T)genCallback.createItem();
-
-                byteBuf.readerIndex();
-
-//                int readableSize = byteBuf.readableBytes();
-//                byte[] buf = new byte[readableSize];
-//                byteBuf.getBytes(readIndex , )
-//
-//                item.decode(byteBuf);
-
+                item.decode(byteBuf);
                 list.add(item);
             }//end for i
         }

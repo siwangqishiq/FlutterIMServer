@@ -11,21 +11,15 @@ import java.util.List;
 public class FriendsResp extends ICodec {
     private List<Friend> friendList;
 
-
     @Override
-    public void decode(ByteBuf rawData) {
-        ByteBuf byteBuf = Unpooled.copiedBuffer(rawData);
-
-
-
+    public void decode(ByteBuf byteBuf) {
+        friendList = readList(byteBuf, ()->{return new Friend();});
     }
 
     @Override
     public ByteBuf encode() {
         ByteBuf byteBuf = Unpooled.buffer(256);
-
         writeList(byteBuf , friendList);
-
         return byteBuf;
     }
 
@@ -34,4 +28,11 @@ public class FriendsResp extends ICodec {
         return Codes.CODE_FRIEND_LIST_RESP;
     }
 
+    public List<Friend> getFriendList() {
+        return friendList;
+    }
+
+    public void setFriendList(List<Friend> friendList) {
+        this.friendList = friendList;
+    }
 }//end class

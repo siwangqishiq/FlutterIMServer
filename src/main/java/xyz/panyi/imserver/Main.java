@@ -1,5 +1,8 @@
 package xyz.panyi.imserver;
 
+import io.netty.buffer.ByteBuf;
+import xyz.panyi.imserver.model.Friend;
+import xyz.panyi.imserver.model.FriendsResp;
 import xyz.panyi.imserver.model.User;
 import xyz.panyi.imserver.service.UserDataCache;
 
@@ -22,6 +25,8 @@ public class Main {
 
     private static void addTestData(){
         List<User> userList = new ArrayList<User>();
+
+
 
         User user1 = new User();
         user1.setAccount("siwangqishiq");
@@ -77,6 +82,10 @@ public class Main {
         UserDataCache.getInstance().addUser(user5);
         userList.add(user5);
 
+        List<Long> friendList = new ArrayList<Long>();
+        for(User u : userList){
+            friendList.add(u.getUid());
+        }
 
         //add firends
         Map<Long,User> uidMap = UserDataCache.getInstance().getUidMap();
@@ -94,6 +103,24 @@ public class Main {
         }//end for each
 
 
+    }
+
+    private void testWriteListCodec(List<User> userList){
+        FriendsResp resp = new FriendsResp();
+        List<Friend> friendList = new ArrayList<Friend>();
+        for(User u : userList){
+            friendList.add(Friend.buildFriendFromUser(u));
+        }//end for each
+        resp.setFriendList(friendList);
+
+        ByteBuf buf = resp.encode();
+
+        FriendsResp decodeResp = new FriendsResp();
+        decodeResp.decode(buf);
+
+        for(Friend f : decodeResp.getFriendList()){
+            System.out.println(f);
+        }//end for each
     }
 
 }//end class
