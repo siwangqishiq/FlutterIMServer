@@ -17,6 +17,7 @@ public class User {
     private String avator;
     private int sex; // 性别 1男  0女
     private String desc;//描述
+    private int age;
 
     private List<Long> friends = new ArrayList<Long>();
 
@@ -74,6 +75,14 @@ public class User {
 
     public void setAvator(String avator) {
         this.avator = avator;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
     }
 
     public List<Long> getFriends() {

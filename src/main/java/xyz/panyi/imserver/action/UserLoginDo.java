@@ -44,6 +44,7 @@ public class UserLoginDo {
         }//end for i
 
         FriendsResp resp = new FriendsResp();
+        resp.setResult(FriendsResp.RESULT_SUCCESS);
         resp.setFriendList(contacts);
 
         ctx.writeAndFlush(resp);

@@ -9,16 +9,19 @@ import java.util.List;
  * 自动登录 报文响应
  */
 public class FriendsResp extends ICodec {
+    private int result;
     private List<Friend> friendList;
 
     @Override
     public void decode(ByteBuf byteBuf) {
+        result = readInt(byteBuf);
         friendList = readList(byteBuf, ()->{return new Friend();});
     }
 
     @Override
     public ByteBuf encode() {
         ByteBuf byteBuf = Unpooled.buffer(256);
+        writeInt(byteBuf , result);
         writeList(byteBuf , friendList);
         return byteBuf;
     }
@@ -34,5 +37,13 @@ public class FriendsResp extends ICodec {
 
     public void setFriendList(List<Friend> friendList) {
         this.friendList = friendList;
+    }
+
+    public int getResult() {
+        return result;
+    }
+
+    public void setResult(int result) {
+        this.result = result;
     }
 }//end class

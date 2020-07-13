@@ -9,8 +9,12 @@ public class Friend extends ICodec {
     private String avator;
     private String account;
     private String nick;
+    private int age;
+
+
 
     /**
+
      *
      * @param user
      * @return
@@ -25,6 +29,7 @@ public class Friend extends ICodec {
         result.setAvator(user.getAvator());
         result.setSex(user.getSex());
         result.setNick(user.getDisplayName());
+        result.setAge(user.getAge());
 
         return result;
     }
@@ -39,6 +44,7 @@ public class Friend extends ICodec {
         avator = readString(byteBuf);
         account = readString(byteBuf);
         nick = readString(byteBuf);
+        age = readInt(byteBuf);
     }
 
     @Override
@@ -50,6 +56,7 @@ public class Friend extends ICodec {
         writeString(byteBuf , avator);
         writeString(byteBuf , account);
         writeString(byteBuf, nick);
+        writeInt(byteBuf , age);
 
         return byteBuf;
     }
@@ -97,6 +104,14 @@ public class Friend extends ICodec {
 
     public void setNick(String nick) {
         this.nick = nick;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
     }
 
     @Override

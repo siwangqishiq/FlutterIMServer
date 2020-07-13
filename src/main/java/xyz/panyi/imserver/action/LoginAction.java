@@ -49,17 +49,15 @@ public class LoginAction implements IAction {
                 resp.setUid(user.getUid());
                 resp.setAvator(user.getAvator());
                 resp.setDisplayName(user.getDisplayName());
+                ctx.writeAndFlush(resp);
 
                 userLoginDo.userLogin(user , token , ctx);
             }
         }else{
             resp.setResultCode(LoginResp.RESULT_CODE_ERROR);
             resp.setToken(null);
+            ctx.writeAndFlush(resp);
         }
-
-        System.out.println("resp = " + resp);
-
-        ctx.writeAndFlush(resp);
     }
 
 }//end class

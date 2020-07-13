@@ -14,6 +14,8 @@ import java.util.List;
  */
 public abstract class ICodec {
 
+    public static final int RESULT_SUCCESS = 1;
+    public static final int RESULT_ERROR = 0;
 
     public abstract void decode(ByteBuf rawData);
 

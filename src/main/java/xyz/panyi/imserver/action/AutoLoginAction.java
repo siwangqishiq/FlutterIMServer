@@ -19,12 +19,11 @@ public class AutoLoginAction extends CheckTokenAction<AutoLoginReq> {
 
     @Override
     void vertifySuccess(ChannelHandlerContext ctx, AutoLoginReq bean, User user) {
-        userLoginDo.userLogin(user , bean.getToken() , ctx);
-
         final AutoLoginResp resp = new AutoLoginResp();
         resp.setResult(AutoLoginResp.RESULT_SUCCESS);
-
         ctx.writeAndFlush(resp);
+
+        userLoginDo.userLogin(user , bean.getToken() , ctx);
     }
 
     @Override
