@@ -73,7 +73,7 @@ public class Main {
         user4.setAvator("http://pic1.win4000.com/wallpaper/2020-07-06/5f02e087d5cc0.jpg");
         user4.setAge(17);
         userList.add(user4);
-        UserDataCache.getInstance().addUser(user3);
+        UserDataCache.getInstance().addUser(user4);
 
 
         User user5 = new User();
