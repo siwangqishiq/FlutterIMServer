@@ -42,13 +42,16 @@ public class LoginAction implements IAction {
             String token = SecurityHelper.createToken(user.getUid() , account , pwd);
             resp.setToken(token);
 
-
-
             if(user != null){
                 resp.setAccount(user.getAccount());
                 resp.setUid(user.getUid());
                 resp.setAvator(user.getAvator());
                 resp.setDisplayName(user.getDisplayName());
+
+                resp.setSex(user.getSex());
+                resp.setDesc(user.getDesc());
+                resp.setAge(user.getAge());
+
                 ctx.writeAndFlush(resp);
 
                 userLoginDo.userLogin(user , token , ctx);

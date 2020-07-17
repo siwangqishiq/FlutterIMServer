@@ -19,6 +19,10 @@ public class LoginResp extends ICodec {
     private String avator;//头像
     private String displayName;
 
+    private int sex;
+    private String desc;
+    private int age;
+
     @Override
     public void decode(ByteBuf byteBuf) {
         resultCode = readInt(byteBuf);
@@ -27,6 +31,10 @@ public class LoginResp extends ICodec {
         uid = readLong(byteBuf);
         avator = readString(byteBuf);
         displayName = readString(byteBuf);
+
+        sex = readInt(byteBuf);
+        desc = readString(byteBuf);
+        age = readInt(byteBuf);
     }
 
     @Override
@@ -39,6 +47,9 @@ public class LoginResp extends ICodec {
         writeLong(byteBuf , uid);
         writeString(byteBuf , avator);
         writeString(byteBuf , displayName);
+        writeInt(byteBuf , sex);
+        writeString(byteBuf , desc);
+        writeInt(byteBuf , age);
 
         return byteBuf;
     }
@@ -108,4 +119,28 @@ public class LoginResp extends ICodec {
         this.displayName = displayName;
     }
 
+
+    public int getSex() {
+        return sex;
+    }
+
+    public void setSex(int sex) {
+        this.sex = sex;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
 }//end class
