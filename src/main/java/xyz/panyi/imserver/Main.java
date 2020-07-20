@@ -5,6 +5,7 @@ import xyz.panyi.imserver.model.Friend;
 import xyz.panyi.imserver.model.FriendsResp;
 import xyz.panyi.imserver.model.User;
 import xyz.panyi.imserver.service.UserDataCache;
+import xyz.panyi.imserver.util.GenUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +47,7 @@ public class Main {
         user2.setDisplayName("工藤新一");
         user2.setSex(User.SEX_MALE);
         user2.setPwd("123456");
-        user2.setAvator("https://pbs.twimg.com/profile_images/1253753602637656064/R7gPnwQR_400x400.jpg");
+        user2.setAvator("https://hbimg.huabanimg.com/cb572856b04f79cec746667adfc2425115420b9919cb0-n9a02P_fw658/format/webp");
         user2.setDesc("真相永远只有一个");
         user2.setAge(18);
         userList.add(user2);
@@ -57,7 +58,7 @@ public class Main {
         user3.setUid(3);
         user3.setDisplayName("毛利兰");
         user3.setPwd("123456");
-        user3.setAvator("https://pbs.twimg.com/profile_images/888462069892136960/VG1pBK-d_400x400.jpg");
+        user3.setAvator("https://hbimg.huabanimg.com/7b6b40ea29a5a6757dc094b01eaed635886b21aa8bff7-KuebkG_fw658/format/webp");
         user3.setSex(User.SEX_FEMALE);
         user3.setDesc("洗衣机~~~~~~~~~~~~");
         user3.setAge(19);

@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 
 public class Msg {
     private int length; //消息总长度
+
     private int code; //消息类型
 
     public ByteBuf data;

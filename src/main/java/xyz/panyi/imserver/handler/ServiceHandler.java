@@ -1,5 +1,7 @@
 package xyz.panyi.imserver.handler;
 
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.util.CharsetUtil;
@@ -9,13 +11,24 @@ import xyz.panyi.imserver.action.LoginAction;
 import xyz.panyi.imserver.action.LoginOutAction;
 import xyz.panyi.imserver.model.*;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
 /**
  *  im业务服务handler
  */
 public class ServiceHandler extends SimpleChannelInboundHandler<Msg> {
 
+    public static final long RECIPT_TIME_OUT = 30 * 1000;//超时重发时间
+
+    private Map<Long, ReciptMsg> mRetryMsgsMap = new HashMap<Long,ReciptMsg>();
+
+    private ChannelHandlerContext mChannelContext;
+
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        mChannelContext = ctx;
         System.out.println("channel active " + ctx.channel().remoteAddress().toString());
         //sayHello(ctx);
     }
@@ -97,6 +110,34 @@ public class ServiceHandler extends SimpleChannelInboundHandler<Msg> {
             }
             //ctx.close();
         });
+    }
+
+    /**
+     * 发送保证必达的消息
+     * @param ctx
+     * @param reciptMsg
+     */
+    public void sendReciptMsg(ChannelHandlerContext ctx ,final ReciptMsg reciptMsg){
+        ctx.writeAndFlush(reciptMsg).addListener((future)->{
+            //启动定时器
+            ctx.executor().scheduleAtFixedRate(()->{
+                //加入Map中
+                reciptMsg.sendTimes++;
+                mRetryMsgsMap.put(reciptMsg.getUuid() , reciptMsg);
+
+                retryReciptMsg();
+            },RECIPT_TIME_OUT , RECIPT_TIME_OUT , TimeUnit.MILLISECONDS);
+        });
+    }
+
+    /**
+     * 超时后重发消息逻辑
+     */
+    private void retryReciptMsg(){
+        if(mChannelContext == null || mRetryMsgsMap.isEmpty())
+            return;
+
+
     }
 
 }//end class
