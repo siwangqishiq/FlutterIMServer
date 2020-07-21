@@ -1,6 +1,7 @@
 package xyz.panyi.imserver.action;
 
 import io.netty.channel.ChannelHandlerContext;
+import xyz.panyi.imserver.handler.ServiceHandler;
 import xyz.panyi.imserver.model.LoginReq;
 import xyz.panyi.imserver.model.LoginResp;
 import xyz.panyi.imserver.model.Msg;
@@ -20,7 +21,7 @@ public class LoginAction implements IAction {
     private UserLoginDo userLoginDo = new UserLoginDo();
 
     @Override
-    public void handle(ChannelHandlerContext ctx, Msg msg) {
+    public void handle(ChannelHandlerContext ctx, Msg msg , ServiceHandler serviceHandler) {
         LoginReq req = new LoginReq();
         req.decode(msg.getData());
 

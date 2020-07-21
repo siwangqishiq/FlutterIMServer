@@ -46,7 +46,7 @@ public class UserLoginDo {
         FriendsResp resp = new FriendsResp();
         resp.setResult(FriendsResp.RESULT_SUCCESS);
 
-        System.out.println("contact size = " + contacts.size());
+        //System.out.println("contact size = " + contacts.size());
 
         resp.setFriendList(contacts);
 

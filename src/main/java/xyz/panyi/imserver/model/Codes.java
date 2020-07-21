@@ -17,4 +17,6 @@ final public class Codes {
 
 
     public static final int CODE_RESET_RESP = 8001;//退出重新登录
+
+    public static final int CODE_RECIPT_ACK= 9001; //远端返回已接收的ack
 }

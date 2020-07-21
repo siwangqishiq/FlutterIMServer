@@ -1,6 +1,7 @@
 package xyz.panyi.imserver.action;
 
 import io.netty.channel.ChannelHandlerContext;
+import xyz.panyi.imserver.handler.ServiceHandler;
 import xyz.panyi.imserver.model.*;
 import xyz.panyi.imserver.service.AuthService;
 import xyz.panyi.imserver.service.IAuthService;
@@ -30,7 +31,7 @@ public abstract class CheckTokenAction <T extends BaseTokenBean> implements IAct
     abstract void vertifyError(ChannelHandlerContext ctx , T bean);
 
     @Override
-    public void handle(ChannelHandlerContext ctx, Msg msg) {
+    public void handle(ChannelHandlerContext ctx, Msg msg , ServiceHandler serviceHandler) {
         BaseTokenBean data = createDataBean(msg);
 
         final String token = data.getToken();
