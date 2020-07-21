@@ -55,7 +55,7 @@ public class LoginAction implements IAction {
 
                 ctx.writeAndFlush(resp);
 
-                userLoginDo.userLogin(user , token , ctx);
+                userLoginDo.userLogin(user , token , serviceHandler);
             }
         }else{
             resp.setResultCode(LoginResp.RESULT_CODE_ERROR);

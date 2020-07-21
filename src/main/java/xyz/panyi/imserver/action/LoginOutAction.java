@@ -1,6 +1,7 @@
 package xyz.panyi.imserver.action;
 
 import io.netty.channel.ChannelHandlerContext;
+import xyz.panyi.imserver.handler.ServiceHandler;
 import xyz.panyi.imserver.model.LoginOutReq;
 import xyz.panyi.imserver.model.LoginOutResp;
 import xyz.panyi.imserver.model.Msg;
@@ -21,7 +22,7 @@ public class LoginOutAction extends CheckTokenAction<LoginOutReq> {
     }
 
     @Override
-    void vertifySuccess(ChannelHandlerContext ctx, LoginOutReq bean , User user) {
+    void vertifySuccess(ChannelHandlerContext ctx, LoginOutReq bean , User user , ServiceHandler serviceHandler) {
         System.out.println("uid ----> " + bean.getUid());
 
         if(user.getUid() == bean.getUid()){
@@ -31,12 +32,12 @@ public class LoginOutAction extends CheckTokenAction<LoginOutReq> {
             resp.setResult(LoginOutResp.RESULT_LOGINOUT_SUCCESS);
             ctx.writeAndFlush(resp);
         }else{
-            vertifyError(ctx , bean);
+            vertifyError(ctx , bean , serviceHandler);
         }
     }
 
     @Override
-    void vertifyError(ChannelHandlerContext ctx, LoginOutReq bean) {
+    void vertifyError(ChannelHandlerContext ctx, LoginOutReq bean , ServiceHandler serviceHandler) {
         LoginOutResp response = new LoginOutResp();
         response.setResult(LoginOutResp.RESULT_LOGINOUT_ERROR);
         ctx.writeAndFlush(response);

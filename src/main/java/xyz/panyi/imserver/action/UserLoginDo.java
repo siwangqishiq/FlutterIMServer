@@ -1,8 +1,10 @@
 package xyz.panyi.imserver.action;
 
 import io.netty.channel.ChannelHandlerContext;
+import xyz.panyi.imserver.handler.ServiceHandler;
 import xyz.panyi.imserver.model.Friend;
 import xyz.panyi.imserver.model.FriendsResp;
+import xyz.panyi.imserver.model.HelloRecipeMsg;
 import xyz.panyi.imserver.model.User;
 import xyz.panyi.imserver.service.OnlineUsers;
 import xyz.panyi.imserver.service.UserDataCache;
@@ -19,13 +21,16 @@ public class UserLoginDo {
      *
      * @param user
      * @param token
-     * @param ctx
+     * @param serviceHandler
      */
-    public void userLogin(User user , String token , ChannelHandlerContext ctx){
-        OnlineUsers.getInstance().userOnline(user.getUid() ,  ctx , user);//添加到在线用户列表
+    public void userLogin(User user , String token , ServiceHandler serviceHandler){
+        OnlineUsers.getInstance().userOnline(user.getUid() ,  serviceHandler.getChannelHandlerContext(), user);//添加到在线用户列表
 
-        responseContacts(user , ctx);
+        responseContacts(user , serviceHandler.getChannelHandlerContext());
+
+        sayHelloRecipeTest(serviceHandler);
     }
+
 
     /**
      * 返回好友列表
@@ -45,11 +50,22 @@ public class UserLoginDo {
 
         FriendsResp resp = new FriendsResp();
         resp.setResult(FriendsResp.RESULT_SUCCESS);
-
         //System.out.println("contact size = " + contacts.size());
 
         resp.setFriendList(contacts);
 
         ctx.writeAndFlush(resp);
     }
-}
+
+    private void sayHelloRecipeTest(ServiceHandler serviceHandler){
+        HelloRecipeMsg helloMsg = new HelloRecipeMsg();
+        helloMsg.setHello("Hello ! 我是一个有重传机制的消息 我一定要保证送达哦~~~~~");
+
+        helloMsg.setCallback((user)->{
+            System.out.println("尝试多次 还是没有响应  算了吧");
+        });
+
+        serviceHandler.sendRecipeMsg(helloMsg);
+    }
+
+}//end class

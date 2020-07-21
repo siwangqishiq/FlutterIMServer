@@ -26,6 +26,10 @@ public class ServiceHandler extends SimpleChannelInboundHandler<Msg> {
 
     private ChannelHandlerContext mChannelContext;
 
+    public ChannelHandlerContext getChannelHandlerContext(){
+        return mChannelContext;
+    }
+
     public User mUser; //标示远端用户身份  未登录时为null
 
     private LruCache<Long,RecipeMsg> mHasReceivedMsgMap = new LruCache(128);
@@ -102,14 +106,13 @@ public class ServiceHandler extends SimpleChannelInboundHandler<Msg> {
     /**
      * 发送保证必达的消息
      *
-     * @param ctx
      * @param reciptMsg
      */
-    public void sendReciptMsg(ChannelHandlerContext ctx, final RecipeMsg reciptMsg) {
-        ctx.writeAndFlush(reciptMsg).addListener((future) -> {
+    public void sendRecipeMsg(final RecipeMsg reciptMsg) {
+        mChannelContext.writeAndFlush(reciptMsg).addListener((future) -> {
             mRetryMsgsMap.put(reciptMsg.getUuid() , reciptMsg);
             //启动定时器
-            ctx.executor().schedule(() -> {
+            mChannelContext.executor().schedule(() -> {
                 retryReciptMsg(reciptMsg.getUuid());
             }, RECIPT_TIME_OUT, TimeUnit.MILLISECONDS);
         });
@@ -127,7 +130,7 @@ public class ServiceHandler extends SimpleChannelInboundHandler<Msg> {
 
         msg.sendTimes++;
         if (msg.sendTimes > RecipeMsg.MAX_RETRY_TIMES) {//超过最大重试次数
-            System.out.println("移除消息 uuid = " + msg.getUuid());
+            System.out.println("多次重试后 移除消息 uuid = " + msg.getUuid());
             mRetryMsgsMap.remove(msgUuid);
 
             if (msg.getCallback() != null) {
@@ -135,7 +138,7 @@ public class ServiceHandler extends SimpleChannelInboundHandler<Msg> {
             }
         } else {
             System.out.println("重发消息 uuid = " + msg.getUuid());
-            sendReciptMsg(mChannelContext, msg);
+            sendRecipeMsg(msg);
         }
     }
 

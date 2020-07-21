@@ -26,6 +26,7 @@ public abstract class RecipeMsg extends ICodec {
     public int sendTimes = 0;
 
     public RecipeMsg(){
+        autoGenUuid();
     }
 
     public void autoGenUuid(){

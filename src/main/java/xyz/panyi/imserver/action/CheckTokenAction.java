@@ -21,14 +21,14 @@ public abstract class CheckTokenAction <T extends BaseTokenBean> implements IAct
      * @param ctx
      * @param bean
      */
-    abstract void vertifySuccess(ChannelHandlerContext ctx , T bean , User user);
+    abstract void vertifySuccess(ChannelHandlerContext ctx , T bean , User user , ServiceHandler serviceHandler);
 
     /**
      * token验证失败
      * @param ctx
      * @param bean
      */
-    abstract void vertifyError(ChannelHandlerContext ctx , T bean);
+    abstract void vertifyError(ChannelHandlerContext ctx , T bean , ServiceHandler serviceHandler);
 
     @Override
     public void handle(ChannelHandlerContext ctx, Msg msg , ServiceHandler serviceHandler) {
@@ -47,9 +47,9 @@ public abstract class CheckTokenAction <T extends BaseTokenBean> implements IAct
             String account = SecurityHelper.getAccountFromToken(token);
             User user = UserDataCache.getInstance().getUserByAccount(account);
 
-            vertifySuccess(ctx , (T)data , user);
+            vertifySuccess(ctx , (T)data , user , serviceHandler);
         }else{
-            vertifyError(ctx , (T)data);
+            vertifyError(ctx , (T)data , serviceHandler);
         }
     }
 
