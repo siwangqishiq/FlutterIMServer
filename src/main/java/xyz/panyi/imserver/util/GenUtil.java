@@ -10,9 +10,10 @@ import java.util.UUID;
 public final class GenUtil {
     private final static SimpleDateFormat sdf = new SimpleDateFormat("MMdd");
 
-    private final static String GEN_BY_SERVER = "11";
+    public final static String GEN_BY_SERVER = "11";
+    public final static String GEN_BY_MOBILE = "22";
 
-    public static long get16UUID(){
+    public static long genUuid(){
         // 1.开头两位，标识业务代码或机器代码（可变参数）
         String machineId = GEN_BY_SERVER;
         // 2.中间四位整数，标识日期

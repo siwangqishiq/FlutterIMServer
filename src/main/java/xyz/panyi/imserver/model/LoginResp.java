@@ -6,7 +6,7 @@ import io.netty.buffer.Unpooled;
 /**
  * 登录请求
  */
-public class LoginResp extends ICodec {
+public class LoginResp extends Codec {
     public static final int RESULT_CODE_SUCCESS = 1;//成功
     public static final int RESULT_CODE_ERROR= -1;
     public static final int RESULT_CODE_ERROR_PWD = -2;//

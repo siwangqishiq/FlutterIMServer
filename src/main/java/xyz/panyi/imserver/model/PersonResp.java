@@ -6,7 +6,7 @@ import io.netty.buffer.Unpooled;
 /**
  *  test for resp
  */
-public class PersonResp extends ICodec {
+public class PersonResp extends Codec {
     private String respContent;
     private long time;
 

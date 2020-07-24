@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * 自动登录 报文响应
  */
-public class FriendsResp extends ICodec {
+public class FriendsResp extends Codec {
     private int result;
     private List<Friend> friendList;
 

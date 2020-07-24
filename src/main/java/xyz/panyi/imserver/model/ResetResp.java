@@ -6,7 +6,7 @@ import io.netty.buffer.Unpooled;
 /**
  *   重置
  */
-public class ResetResp extends ICodec {
+public class ResetResp extends Codec {
     public static final int RESET_CODE_ERRORTOKEN = 1;
 
     private int code;

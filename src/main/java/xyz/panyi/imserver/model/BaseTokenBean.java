@@ -6,7 +6,7 @@ import io.netty.buffer.Unpooled;
 /**
  *
  */
-public abstract class BaseTokenBean extends ICodec {
+public abstract class BaseTokenBean extends Codec {
     protected String token;
 
     public BaseTokenBean(String _token){

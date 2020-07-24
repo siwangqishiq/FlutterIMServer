@@ -3,7 +3,7 @@ package xyz.panyi.imserver.model;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-public class Person extends ICodec {
+public class Person extends Codec {
     private String name;
     private int age;
     private String desc;

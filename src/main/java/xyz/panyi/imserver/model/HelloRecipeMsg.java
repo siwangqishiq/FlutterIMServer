@@ -1,23 +1,23 @@
 package xyz.panyi.imserver.model;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * 用于测试Recipe型消息
  *
  */
-public class HelloRecipeMsg extends RecipeMsg {
+public class HelloRecipeMsg extends Codec {
     private String hello;
 
     @Override
     public void decode(ByteBuf rawData) {
-        super.decode(rawData);
         hello = readString(rawData);
     }
 
     @Override
     public ByteBuf encode() {
-        ByteBuf byteBuf = super.encode();
+        ByteBuf byteBuf = Unpooled.buffer(512);
         writeString(byteBuf , hello);
         return byteBuf;
     }
@@ -33,5 +33,10 @@ public class HelloRecipeMsg extends RecipeMsg {
     @Override
     public int code() {
         return Codes.CODE_RECIPE_HELLO;
+    }
+
+    @Override
+    public boolean needSendRetry(){
+        return true;
     }
 }

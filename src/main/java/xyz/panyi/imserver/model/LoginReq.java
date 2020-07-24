@@ -6,7 +6,7 @@ import io.netty.buffer.Unpooled;
 /**
  * 登录请求
  */
-public class LoginReq extends ICodec {
+public class LoginReq extends Codec {
     private String account;
     private String pwd;
 

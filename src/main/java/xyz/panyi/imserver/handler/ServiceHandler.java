@@ -1,5 +1,6 @@
 package xyz.panyi.imserver.handler;
 
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import xyz.panyi.imserver.action.AutoLoginAction;
@@ -7,12 +8,9 @@ import xyz.panyi.imserver.action.IAction;
 import xyz.panyi.imserver.action.LoginAction;
 import xyz.panyi.imserver.action.LoginOutAction;
 import xyz.panyi.imserver.model.*;
-import xyz.panyi.imserver.util.LruCache;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -21,8 +19,9 @@ import java.util.concurrent.TimeUnit;
 public class ServiceHandler extends SimpleChannelInboundHandler<Msg> {
 
     public static final long RECIPT_TIME_OUT = 30 * 1000;//超时重发时间
+    public static final int MAX_RETRY_TIMES = 3;
 
-    private Map<Long, RecipeMsg> mRetryMsgsMap = new HashMap<Long, RecipeMsg>();
+    private Map<Long, Codec> mRetryMsgsMap = new HashMap<Long, Codec>();
 
     private ChannelHandlerContext mChannelContext;
 
@@ -32,7 +31,6 @@ public class ServiceHandler extends SimpleChannelInboundHandler<Msg> {
 
     public User mUser; //标示远端用户身份  未登录时为null
 
-    private LruCache<Long,RecipeMsg> mHasReceivedMsgMap = new LruCache(128);
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
@@ -53,7 +51,7 @@ public class ServiceHandler extends SimpleChannelInboundHandler<Msg> {
      * @throws Exception
      */
     protected void channelRead0(ChannelHandlerContext ctx, Msg msg) throws Exception {
-        System.out.println("read msg = " + msg);
+        System.out.println("read msg = " + msg +"  uuid = " + msg.getUuid());
 
         if (msg == null || msg.getData() == null)
             return;
@@ -71,7 +69,7 @@ public class ServiceHandler extends SimpleChannelInboundHandler<Msg> {
                 action = new AutoLoginAction();
                 break;
             case Codes.CODE_RECIPT_ACK:
-                handleRecipt(msg);
+                handleReciptAck(msg);
                 break;
             default:
                 break;
@@ -88,11 +86,12 @@ public class ServiceHandler extends SimpleChannelInboundHandler<Msg> {
      * recipt消息的返回 处理
      * 从缓存中移除重发消息
      */
-    public void handleRecipt(Msg msg) {
+    public void handleReciptAck(Msg msg) {
         RecipeAck reciptAck = new RecipeAck();
         reciptAck.decode(msg.getData());
 
         long uuid = reciptAck.getSendUuid();
+        System.out.println("removd uuid = " + uuid);
         mRetryMsgsMap.remove(uuid);
     }
 
@@ -100,22 +99,21 @@ public class ServiceHandler extends SimpleChannelInboundHandler<Msg> {
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         cause.printStackTrace();
-        ctx.close();
+        //ctx.close();
     }
 
-    /**
-     * 发送保证必达的消息
-     *
-     * @param reciptMsg
-     */
-    public void sendRecipeMsg(final RecipeMsg reciptMsg) {
-        mChannelContext.writeAndFlush(reciptMsg).addListener((future) -> {
-            mRetryMsgsMap.put(reciptMsg.getUuid() , reciptMsg);
-            //启动定时器
-            mChannelContext.executor().schedule(() -> {
-                retryReciptMsg(reciptMsg.getUuid());
-            }, RECIPT_TIME_OUT, TimeUnit.MILLISECONDS);
-        });
+    public void sendCodec(final Codec codec) {
+        final ChannelFuture future = mChannelContext.writeAndFlush(codec);
+
+        if(codec.needSendRetry()){ //发送的消息要求具有超时重发机制  启动定时重发任务
+            future.addListener((f) -> {
+                mRetryMsgsMap.put(codec.uuid , codec);
+                //启动定时器
+                mChannelContext.executor().schedule(() -> {
+                    retryReciptMsg(codec.uuid);
+                }, RECIPT_TIME_OUT, TimeUnit.MILLISECONDS);
+            });
+        }
     }
 
     /**
@@ -126,19 +124,18 @@ public class ServiceHandler extends SimpleChannelInboundHandler<Msg> {
         if (mChannelContext == null || mRetryMsgsMap.get(msgUuid) == null)
             return;
 
-        final RecipeMsg msg = mRetryMsgsMap.get(msgUuid);
-
-        msg.sendTimes++;
-        if (msg.sendTimes > RecipeMsg.MAX_RETRY_TIMES) {//超过最大重试次数
-            System.out.println("多次重试后 移除消息 uuid = " + msg.getUuid());
+        final Codec codecMsg = mRetryMsgsMap.get(msgUuid);
+        codecMsg.sendTimes++;
+        if (codecMsg.sendTimes > MAX_RETRY_TIMES) {//超过最大重试次数
+            System.out.println("多次重试后 移除消息 uuid = " + codecMsg.uuid);
             mRetryMsgsMap.remove(msgUuid);
 
-            if (msg.getCallback() != null) {
-                msg.getCallback().onSendError(mUser);
+            if (codecMsg.getCallback() != null) {
+                codecMsg.getCallback().onSendError(codecMsg , mUser);
             }
         } else {
-            System.out.println("重发消息 uuid = " + msg.getUuid());
-            sendRecipeMsg(msg);
+            System.out.println("重发消息 uuid = " + codecMsg.uuid);
+            sendCodec(codecMsg);
         }
     }
 

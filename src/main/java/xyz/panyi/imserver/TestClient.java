@@ -60,7 +60,7 @@ public class TestClient {
             //ByteBuf dataBuf = Unpooled.copiedBuffer(str.getBytes(CharsetUtil.UTF_8));
             int code = 101;
 
-            Msg helloMsg = Msg.genMsg(code ,Unpooled.copiedBuffer(str.getBytes(CharsetUtil.UTF_8)));
+            Msg helloMsg = Msg.genMsg(code , 0 ,Unpooled.copiedBuffer(str.getBytes(CharsetUtil.UTF_8)));
             ctx.writeAndFlush(helloMsg);
         }
 

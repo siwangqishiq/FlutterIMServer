@@ -6,7 +6,7 @@ import io.netty.buffer.Unpooled;
 /**
  * 自动登录 报文响应
  */
-public class AutoLoginResp extends ICodec {
+public class AutoLoginResp extends Codec {
     public static final int RESULT_SUCCESS = 1;
     public static final int RESULT_ERROR = -1;
 

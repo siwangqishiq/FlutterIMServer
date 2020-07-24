@@ -1,23 +1,44 @@
 package xyz.panyi.imserver.model;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import io.netty.util.CharsetUtil;
 import io.netty.util.internal.StringUtil;
+import xyz.panyi.imserver.util.GenUtil;
 
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * 自动编码接口
  */
-public abstract class ICodec {
+public abstract class Codec {
 
     public static final int RESULT_SUCCESS = 1;
     public static final int RESULT_ERROR = 0;
 
     public abstract void decode(ByteBuf rawData);
+
+    public long uuid = GenUtil.genUuid();
+    public int sendTimes = 0;
+
+    public interface SendCallBack{
+        void onSendError(Codec codec , User user);
+    }
+
+    private SendCallBack callback;
+
+    /**
+     *  设置回调  多次重发仍然失败后的回调操作
+     *
+     * @param cb
+     */
+    public void setCallback(SendCallBack cb){
+        this.callback = cb;
+    }
+
+    public SendCallBack getCallback(){
+        return callback;
+    }
 
     /**
      * data to bytes
@@ -28,6 +49,15 @@ public abstract class ICodec {
 
 
     public abstract int code();
+
+
+    /**
+     *  是否有超时重发机制   默认没有
+     * @return
+     */
+    public boolean needSendRetry(){
+        return false;
+    }
 
     public ByteBuf writeInt(ByteBuf byteBuf , int value){
         byteBuf.writeIntLE(value);
@@ -77,20 +107,20 @@ public abstract class ICodec {
      * @param <T>
      * @return
      */
-    public <T extends ICodec> ByteBuf writeList(ByteBuf byteBuf , List<T> list){
+    public <T extends Codec> ByteBuf writeList(ByteBuf byteBuf , List<T> list){
         if(list == null || list.size() == 0){
             byteBuf.writeIntLE(0);
         }else{
             byteBuf.writeIntLE(list.size());
             for(int i = 0 ; i < list.size();i++){
-                ICodec codec = list.get(i);
+                Codec codec = list.get(i);
                 byteBuf.writeBytes(codec.encode());
             }//end for each
         }
         return byteBuf;
     }
 
-    public interface IGenListItem<T extends ICodec>{
+    public interface IGenListItem<T extends Codec>{
         T createItem();
     }
 
@@ -101,7 +131,7 @@ public abstract class ICodec {
      * @param <T>
      * @return
      */
-    public <T extends ICodec> List<T> readList(ByteBuf byteBuf , IGenListItem genCallback){
+    public <T extends Codec> List<T> readList(ByteBuf byteBuf , IGenListItem genCallback){
         int listSize = readInt(byteBuf);
         List<T> list = new ArrayList<T>();
 
@@ -115,4 +145,6 @@ public abstract class ICodec {
 
         return list;
     }
+
+
 }//end class

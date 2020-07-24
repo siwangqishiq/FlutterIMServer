@@ -6,7 +6,7 @@ import io.netty.buffer.Unpooled;
 /**
  * 注销请求响应
  */
-public class LoginOutResp extends ICodec {
+public class LoginOutResp extends Codec {
     public static final int RESULT_LOGINOUT_SUCCESS = 1;
     public static final int RESULT_LOGINOUT_ERROR = -1;
 

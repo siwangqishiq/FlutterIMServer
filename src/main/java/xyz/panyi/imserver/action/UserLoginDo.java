@@ -26,8 +26,10 @@ public class UserLoginDo {
     public void userLogin(User user , String token , ServiceHandler serviceHandler){
         OnlineUsers.getInstance().userOnline(user.getUid() ,  serviceHandler.getChannelHandlerContext(), user);//添加到在线用户列表
 
-        responseContacts(user , serviceHandler.getChannelHandlerContext());
+        //返回好友列表
+        responseContacts(user , serviceHandler);
 
+        //说个Hello~
         sayHelloRecipeTest(serviceHandler);
     }
 
@@ -35,9 +37,9 @@ public class UserLoginDo {
     /**
      * 返回好友列表
      * @param user
-     * @param ctx
+     * @param serviceHandler
      */
-    public void responseContacts(User user , ChannelHandlerContext ctx){
+    public void responseContacts(User user , ServiceHandler serviceHandler){
         List<Long> friendUids = user.getFriends();
 
         List<Friend> contacts = new ArrayList<Friend>();
@@ -51,21 +53,20 @@ public class UserLoginDo {
         FriendsResp resp = new FriendsResp();
         resp.setResult(FriendsResp.RESULT_SUCCESS);
         //System.out.println("contact size = " + contacts.size());
-
         resp.setFriendList(contacts);
 
-        ctx.writeAndFlush(resp);
+        serviceHandler.sendCodec(resp);
     }
 
     private void sayHelloRecipeTest(ServiceHandler serviceHandler){
         HelloRecipeMsg helloMsg = new HelloRecipeMsg();
         helloMsg.setHello("Hello ! 我是一个有重传机制的消息 我一定要保证送达哦~~~~~");
 
-        helloMsg.setCallback((user)->{
+        helloMsg.setCallback((codec , user)->{
             System.out.println("尝试多次 还是没有响应  算了吧");
         });
 
-        serviceHandler.sendRecipeMsg(helloMsg);
+        serviceHandler.sendCodec(helloMsg);
     }
 
 }//end class

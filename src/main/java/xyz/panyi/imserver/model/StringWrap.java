@@ -6,7 +6,7 @@ import io.netty.buffer.ByteBuf;
 /**
  * 字符串包装类
  */
-public class StringWrap extends ICodec {
+public class StringWrap extends Codec {
     private String content;
 
     public StringWrap(String content) {
