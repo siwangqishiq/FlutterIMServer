@@ -3,10 +3,7 @@ package xyz.panyi.imserver.handler;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import xyz.panyi.imserver.action.AutoLoginAction;
-import xyz.panyi.imserver.action.IAction;
-import xyz.panyi.imserver.action.LoginAction;
-import xyz.panyi.imserver.action.LoginOutAction;
+import xyz.panyi.imserver.action.*;
 import xyz.panyi.imserver.model.*;
 
 import java.util.HashMap;
@@ -69,7 +66,13 @@ public class ServiceHandler extends SimpleChannelInboundHandler<Msg> {
                 action = new AutoLoginAction();
                 break;
             case Codes.CODE_RECIPT_ACK:
-                handleReciptAck(msg);
+                RecipeAck ack = new RecipeAck();
+                ack.decode(msg.getData());
+                mRetryMsgsMap.remove(ack.getSendUuid());
+                break;
+            case Codes.CODE_RECIPE_HELLO:
+                handleNeedAckMsg(msg);
+                action = new HelloRecipeAction();
                 break;
             default:
                 break;
@@ -83,16 +86,23 @@ public class ServiceHandler extends SimpleChannelInboundHandler<Msg> {
     }
 
     /**
+     * 针对uuid报文的回执
+     * @param uuid
+     */
+    public void sendAck(long uuid){
+        RecipeAck ack = new RecipeAck();
+        ack.setSendUuid(uuid);
+
+        sendCodec(ack);
+    }
+
+    /**
      * recipt消息的返回 处理
      * 从缓存中移除重发消息
      */
-    public void handleReciptAck(Msg msg) {
-        RecipeAck reciptAck = new RecipeAck();
-        reciptAck.decode(msg.getData());
-
-        long uuid = reciptAck.getSendUuid();
-        System.out.println("removd uuid = " + uuid);
-        mRetryMsgsMap.remove(uuid);
+    public void handleNeedAckMsg(Msg msg) {
+        mRetryMsgsMap.remove(msg.getUuid());
+        sendAck(msg.getUuid());
     }
 
 
@@ -110,7 +120,7 @@ public class ServiceHandler extends SimpleChannelInboundHandler<Msg> {
                 mRetryMsgsMap.put(codec.uuid , codec);
                 //启动定时器
                 mChannelContext.executor().schedule(() -> {
-                    retryReciptMsg(codec.uuid);
+                    retryRecipetMsg(codec.uuid);
                 }, RECIPT_TIME_OUT, TimeUnit.MILLISECONDS);
             });
         }
@@ -120,7 +130,7 @@ public class ServiceHandler extends SimpleChannelInboundHandler<Msg> {
      *
      *  超时后重发消息逻辑
      */
-    private void retryReciptMsg(long msgUuid) {
+    private void retryRecipetMsg(long msgUuid) {
         if (mChannelContext == null || mRetryMsgsMap.get(msgUuid) == null)
             return;
 

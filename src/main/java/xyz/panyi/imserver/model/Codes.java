@@ -19,5 +19,5 @@ public interface Codes {
 
     int CODE_RESET_RESP = 8001;//退出重新登录
 
-    int CODE_RECIPT_ACK= 9001; //远端返回已接收的ack
+    int CODE_RECIPT_ACK= 9001; //远端返回已接收的通知报文
 }

@@ -7,7 +7,7 @@ import io.netty.buffer.Unpooled;
  *  远端发回的确认报文
  */
 public class RecipeAck extends Codec {
-    private long  sendUuid;
+    private long sendUuid;
 
     @Override
     public void decode(ByteBuf rawData) {

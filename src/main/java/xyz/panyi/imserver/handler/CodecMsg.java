@@ -6,6 +6,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 import io.netty.handler.codec.ByteToMessageCodec;
 import xyz.panyi.imserver.model.Msg;
+import xyz.panyi.imserver.model.RecipeAck;
 import xyz.panyi.imserver.util.LruCache;
 
 import java.util.List;
@@ -70,6 +71,8 @@ public class CodecMsg extends ByteToMessageCodec<Msg> {
 
                     //消息去重操作
                     if(mHasReceivedMsgMap.get(msg.getUuid()) != null){
+                        System.out.println("收到重复消息 uuid = " + msg.getUuid());
+                        sendMsgAck(ctx , msg.getUuid());
                         return;
                     }
 
@@ -78,5 +81,12 @@ public class CodecMsg extends ByteToMessageCodec<Msg> {
                 }
             }
         }
+    }
+
+    private void sendMsgAck(ChannelHandlerContext ctx , long uuid){
+        RecipeAck ack = new RecipeAck();
+        ack.setSendUuid(uuid);
+
+        ctx.writeAndFlush(ack);
     }
 }//end class
