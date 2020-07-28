@@ -4,6 +4,7 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import xyz.panyi.imserver.action.*;
+import xyz.panyi.imserver.dao.DatabaseManager;
 import xyz.panyi.imserver.model.*;
 
 import java.util.HashMap;
@@ -18,9 +19,15 @@ public class ServiceHandler extends SimpleChannelInboundHandler<Msg> {
     public static final long RECIPT_TIME_OUT = 30 * 1000;//超时重发时间
     public static final int MAX_RETRY_TIMES = 3;
 
+    private DatabaseManager mDao;
+
     private Map<Long, Codec> mRetryMsgsMap = new HashMap<Long, Codec>();
 
     private ChannelHandlerContext mChannelContext;
+
+    public ServiceHandler(DatabaseManager dao){
+        mDao = dao;
+    }
 
     public ChannelHandlerContext getChannelHandlerContext(){
         return mChannelContext;

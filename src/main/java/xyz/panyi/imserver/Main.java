@@ -1,14 +1,8 @@
 package xyz.panyi.imserver;
 
-import org.apache.ibatis.io.Resources;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import xyz.panyi.imserver.dao.BatisDao;
 import xyz.panyi.imserver.model.User;
 import xyz.panyi.imserver.service.UserDataCache;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -21,15 +15,8 @@ public class Main {
      */
     public static void main(String[] args){
         addTestData();
-        initDao();
         ImServer server = new ImServer(Config.IM_SERVER_PORT);
         server.runLoop();
-    }
-
-    private static void initDao(){
-        BatisDao dao = new BatisDao();
-
-
     }
 
 

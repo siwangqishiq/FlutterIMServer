@@ -8,17 +8,25 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import xyz.panyi.imserver.dao.DatabaseManager;
 import xyz.panyi.imserver.handler.CodecMsg;
 import xyz.panyi.imserver.handler.ObjToMsgEncoder;
 import xyz.panyi.imserver.handler.ServiceHandler;
-import xyz.panyi.imserver.model.User;
-import xyz.panyi.imserver.service.UserDataCache;
 
 public class ImServer {
     private int port;
 
+    private DatabaseManager dao;
+
     public ImServer(int port){
         this.port = port;
+
+        initDao();
+    }
+
+    private void initDao(){
+        dao = new DatabaseManager();
+        dao.initDao();
     }
 
     public void runLoop(){
@@ -37,7 +45,7 @@ public class ImServer {
                             pipeline.addLast("msg_codec" , new CodecMsg());
                             pipeline.addLast("obj_codec" , new ObjToMsgEncoder());
 
-                            pipeline.addLast("service_handler" , new ServiceHandler());
+                            pipeline.addLast("service_handler" , new ServiceHandler(dao));
                         }
                     });
 
