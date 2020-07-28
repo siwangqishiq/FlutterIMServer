@@ -59,6 +59,11 @@ public abstract class Codec {
         return false;
     }
 
+    public ByteBuf writeByte(ByteBuf byteBuf , byte value){
+        byteBuf.writeByte(value);
+        return byteBuf;
+    }
+
     public ByteBuf writeInt(ByteBuf byteBuf , int value){
         byteBuf.writeIntLE(value);
         return byteBuf;
@@ -80,6 +85,10 @@ public abstract class Codec {
         byteBuf.writeIntLE(strBytes.length);
         byteBuf.writeBytes(strBytes);
         return byteBuf;
+    }
+
+    public int readByte(ByteBuf byteBuf){
+        return byteBuf.readByte();
     }
 
     public int readInt(ByteBuf byteBuf){
